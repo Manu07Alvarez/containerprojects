@@ -1,0 +1,61 @@
+name: FastApiPostgreSql
+services:
+  backend:
+    build:
+      context: ./code
+      dockerfile: Containerfile
+    image: fastapi
+    ports:
+      - "8000:8080"
+    container_name: fastapi
+    networks:
+      - backend
+      - frontend
+    depends_on:
+      db:
+        condition: service_started
+        restart: true
+  db:
+    image: postgres:17
+    container_name: postgres_db
+    ports:
+      - "8001:5432"
+    networks:
+      - backend
+    volumes:
+      - db-data:/etc/data
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: fastapi_db
+  db-visor:
+    image: adminer
+    container_name: adminer
+    ports:
+      - "8002:8080"
+    networks:
+      - backend
+    depends_on:
+      db:
+        condition: service_started
+        restart: true
+    environment:
+      ADMINER_PLUGIN: 'table-indexes-structure tables-filter tinymce'
+      ADMINER_DESIGN: 'dracula'
+      ADMINER_DEFAULT_DB_DRIVER: pgsql
+      ADMINER_DEFAULT_USER: admin
+      ADMINER_DEFAULT_USER_PASSWORD: root
+      ADMINER_DEFAULT_SERVER: db
+      ADMINER_DEFAULT_DB_NAME: fastapi_db
+    
+
+volumes:
+  db-data:
+
+networks:
+  frontend:
+    name: frontend-network
+    driver: bridge
+  backend:
+    name: backend-network
+    driver: bridge

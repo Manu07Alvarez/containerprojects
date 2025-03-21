@@ -1,0 +1,57 @@
+name: ExpressJsPostgreSql
+services:
+  backend: 
+    build:
+      context: ./app
+      dockerfile: Containerfile
+    image: expressjs
+    ports:
+      - "8000:3000"
+    container_name: expressjs
+    networks:
+      - backend
+    depends_on:
+      db:
+        condition: service_started
+        restart: true
+  db:
+    image: postgres:17
+    container_name: postgres_db_express
+    ports:
+      - "8001:5432"
+    networks:
+      - backend
+    volumes:
+      - db-express:/etc/data
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: fastapi_db
+  db-visor:
+    image: adminer
+    container_name: adminer_express
+    ports:
+      - "8002:8080"
+    networks:
+      - backend
+    depends_on:
+      db:
+        condition: service_started
+        restart: true
+    environment:
+      ADMINER_PLUGIN: 'table-indexes-structure tables-filter tinymce'
+      ADMINER_DESIGN: 'dracula'
+      ADMINER_DEFAULT_DB_DRIVER: pgsql
+      ADMINER_DEFAULT_USER: admin
+      ADMINER_DEFAULT_USER_PASSWORD: root
+      ADMINER_DEFAULT_SERVER: db
+      ADMINER_DEFAULT_DB_NAME: fastapi_db
+    
+
+volumes:
+  db-express:
+
+networks:
+  backend:
+    name: backend-network
+    driver: bridge
