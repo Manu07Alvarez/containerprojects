@@ -6,4 +6,4 @@ COPY . /code/
 
 RUN pip install -e '.[tests]'
 
-CMD ["fastapi", "dev", "./app/main.py", "--port", "8080"]
+CMD ["fastapi", "dev", "./app/main.py", "--port", "3000"]

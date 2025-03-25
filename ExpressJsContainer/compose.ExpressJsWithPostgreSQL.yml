@@ -1,3 +1,4 @@
+version: '2'
 name: ExpressJsPostgreSql
 services:
   backend: 
@@ -26,7 +27,7 @@ services:
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: root
-      POSTGRES_DB: fastapi_db
+      POSTGRES_DB: express_db
   db-visor:
     image: adminer
     container_name: adminer_express
@@ -45,7 +46,7 @@ services:
       ADMINER_DEFAULT_USER: admin
       ADMINER_DEFAULT_USER_PASSWORD: root
       ADMINER_DEFAULT_SERVER: db
-      ADMINER_DEFAULT_DB_NAME: fastapi_db
+      ADMINER_DEFAULT_DB_NAME: express_db
     
 
 volumes:

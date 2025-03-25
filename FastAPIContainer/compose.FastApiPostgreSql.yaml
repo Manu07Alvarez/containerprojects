@@ -6,7 +6,7 @@ services:
       dockerfile: Containerfile
     image: fastapi
     ports:
-      - "8000:8080"
+      - "8000:3000"
     container_name: fastapi
     networks:
       - backend
