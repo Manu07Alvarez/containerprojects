@@ -5,6 +5,8 @@ services:
       context: ./app
       dockerfile: Containerfile
     image: expressjs
+    volumes:
+      - expressjs:/usr/src/app
     ports:
       - "8000:3000"
     container_name: expressjs
@@ -18,15 +20,14 @@ services:
     image: mysql:lts-oraclelinux9
     container_name: mysql_db_express
     ports:
-      - "8001:5432"
+      - "8001:3306"
     networks:
       - backend
     volumes:
       - db-mysql-express:/etc/data
     environment:
-      MYSQL_TCP_PORT: 5432
-      MYSQL_HOST: express_mysql_db
-      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: testdb
   db-visor:
     image: adminer
     container_name: adminer_express
@@ -41,13 +42,14 @@ services:
     environment:
       ADMINER_PLUGIN: 'table-indexes-structure tables-filter tinymce'
       ADMINER_DESIGN: 'dracula'
-      ADMINER_DEFAULT_DB_DRIVER: pgsql
+      ADMINER_DEFAULT_DB_DRIVER: mysql
       ADMINER_DEFAULT_USER: admin
-      ADMINER_DEFAULT_USER_PASSWORD: root
+      ADMINER_DEFAULT_USER_PASSWORD: admin
       ADMINER_DEFAULT_SERVER: db
-      ADMINER_DEFAULT_DB_NAME: express_db
+      ADMINER_DEFAULT_DB_NAME: testdb
 
 volumes:
+  expressjs:
   db-mysql-express:
 
 networks:
